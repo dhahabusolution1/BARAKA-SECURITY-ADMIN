@@ -73,7 +73,7 @@ function createMarkerIcon(statut: string, priorite: string) {
 export const IncidentMap: React.FC<Props> = ({
   incidents,
   onSelectIncident,
-  center = [-4.325, 15.322],
+  center = [-11.6647, 27.4794],
   zoom = 12,
   height = '500px',
 }) => {

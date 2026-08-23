@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 type Props = {
@@ -26,8 +27,8 @@ export const Modal: React.FC<Props> = ({
     '2xl': 'max-w-2xl',
   }[maxWidth];
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
       <div
         className={`w-full ${widthClass} bg-[var(--color-brand-charcoal)] border border-[var(--color-brand-border)] rounded-xl shadow-2xl overflow-hidden`}
       >
@@ -46,6 +47,7 @@ export const Modal: React.FC<Props> = ({
         </div>
         <div className="p-4 sm:p-6 max-h-[80vh] overflow-y-auto">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

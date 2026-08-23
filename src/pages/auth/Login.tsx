@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router';
 import { LOGIN_OPS_MUTATION } from '../../graphql/operations';
 import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../../components/common/Button';
-import { Lock, Mail } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import logoUrl from '../../assets/logo.png';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [motDePasse, setMotDePasse] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
 
@@ -55,7 +56,7 @@ export const Login: React.FC = () => {
             BARAKA SECURITY
           </h1>
           <p className="text-[11px] sm:text-xs font-semibold text-[var(--color-brand-gold)] tracking-widest uppercase mt-1">
-            Centrale de Supervision des Urgences
+            Centrale de Supervision — Lubumbashi
           </p>
         </div>
 
@@ -88,13 +89,22 @@ export const Login: React.FC = () => {
                 <Lock className="w-4 h-4" />
               </div>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={motDePasse}
                 onChange={(e) => setMotDePasse(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] placeholder-neutral-500 focus:outline-none transition"
+                className="w-full pl-10 pr-11 py-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] placeholder-neutral-500 focus:outline-none transition"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[var(--color-brand-muted)] hover:text-[var(--color-brand-cream)] transition cursor-pointer"
+                title={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 

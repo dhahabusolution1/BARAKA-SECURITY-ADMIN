@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/client/react';
-import { GET_ALERTES_QUERY } from '../../graphql/operations';
+import { useQuery, useSubscription } from '@apollo/client/react';
+import {
+  GET_ALERTES_QUERY,
+  ALERTE_MISE_A_JOUR_SUBSCRIPTION,
+  NOUVELLE_ALERTE_SUBSCRIPTION,
+} from '../../graphql/operations';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import {
@@ -31,6 +35,9 @@ export const AlertesList: React.FC = () => {
     },
     fetchPolicy: 'cache-and-network',
   });
+
+  useSubscription<any>(NOUVELLE_ALERTE_SUBSCRIPTION, { onData: () => refetch() });
+  useSubscription<any>(ALERTE_MISE_A_JOUR_SUBSCRIPTION, { onData: () => refetch() });
 
   const alertes = data?.alertes?.items || [];
   const totalCount = data?.alertes?.totalCount || 0;

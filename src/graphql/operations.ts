@@ -91,13 +91,55 @@ export const GET_DASHBOARD_OPS_QUERY = gql`
 `;
 
 export const GET_STATS_GLOBALES_QUERY = gql`
-  query GetStatsGlobales {
-    getStatsGlobales {
+  query GetStatsGlobales($periodeJours: Int) {
+    getStatsGlobales(periodeJours: $periodeJours) {
+      periodeJours
+      totalPeriode
+      total30Jours
+      alertesAujourdhui
+      alertesHier
+      moyenneParJour
+      tempsMoyenPriseEnChargeSeconds
+      tempsMoyenResolutionSeconds
+      tempsMoyenAffectationEquipeSeconds
+      tauxResolution
+      tauxFaussesAlertes
+      alertesCritiques
+      tauxResolutionCritiques
+      alertesAvecAudio
+      citoyensActifs
+      totalCitoyens
+      equipesDisponibles
+      equipesEnMission
+      equipesTotal
       parStatut {
         statut
         count
       }
-      total30Jours
+      parPriorite {
+        priorite
+        count
+      }
+      volumeParJour {
+        date
+        count
+      }
+      volumeParHeure {
+        heure
+        count
+      }
+      equipesPerformance {
+        equipeId
+        nom
+        interventions
+        tempsMoyenResolutionMinutes
+      }
+      operateursActifs {
+        operateurId
+        nom
+        prenom
+        prisesEnCharge
+      }
     }
   }
 `;
@@ -370,6 +412,8 @@ export const GET_UTILISATEURS_QUERY = gql`
         telephone
         role
         adresse
+        contactUrgenceNom
+        contactUrgenceTel
         createdAt
       }
     }
@@ -405,6 +449,20 @@ export const CHANGER_ROLE_USER_MUTATION = gql`
   mutation ChangerRoleUtilisateur($userId: ID!, $role: Role!) {
     changerRoleUtilisateur(userId: $userId, role: $role) {
       id
+      role
+    }
+  }
+`;
+
+export const MODIFIER_UTILISATEUR_MUTATION = gql`
+  mutation ModifierUtilisateur($userId: ID!, $input: UpdateUtilisateurInput!) {
+    modifierUtilisateur(userId: $userId, input: $input) {
+      id
+      nom
+      prenom
+      email
+      telephone
+      adresse
       role
     }
   }

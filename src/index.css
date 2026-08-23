@@ -93,6 +93,166 @@ body {
   animation: fadeIn 0.2s ease-out forwards;
 }
 
+@keyframes splashSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes splashRingPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.85;
+  }
+}
+
+@keyframes splashLogoEnter {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes splashLogoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes splashGlow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes splashTextReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes splashProgress {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+@keyframes splashOrb {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(12px, -18px) scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+@keyframes splashExit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes splashDots {
+  0%,
+  20% {
+    content: "";
+  }
+  40% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-splash-spin {
+  animation: splashSpin 1.4s linear infinite;
+}
+
+.animate-splash-ring {
+  animation: splashRingPulse 2.4s ease-in-out infinite;
+}
+
+.animate-splash-ring-reverse {
+  animation: splashRingPulse 2.4s ease-in-out infinite reverse;
+}
+
+.animate-splash-logo {
+  animation:
+    splashLogoEnter 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    splashLogoFloat 2.8s ease-in-out 0.9s infinite;
+}
+
+.animate-splash-glow {
+  animation: splashGlow 2.2s ease-in-out infinite;
+}
+
+.animate-splash-text {
+  animation: splashTextReveal 0.8s ease-out 0.35s both;
+}
+
+.animate-splash-progress {
+  animation: splashProgress 1.4s ease-in-out infinite;
+}
+
+.animate-splash-orb {
+  animation: splashOrb 5s ease-in-out infinite;
+}
+
+.animate-splash-orb-delayed {
+  animation: splashOrb 5s ease-in-out 1.2s infinite;
+}
+
+.animate-splash-exit {
+  animation: splashExit 0.65s ease-in forwards;
+}
+
+.animate-splash-dots {
+  animation: splashDots 1.5s ease-in-out infinite;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;

@@ -4,6 +4,7 @@ import {
   GET_UTILISATEURS_QUERY,
   CREER_USER_INTERNE_MUTATION,
   CHANGER_ROLE_USER_MUTATION,
+  MODIFIER_UTILISATEUR_MUTATION,
   REINITIALISER_MDP_MUTATION,
   SUPPRIMER_USER_MUTATION,
 } from '../../graphql/operations';
@@ -18,6 +19,7 @@ import {
   Trash2,
   Mail,
   Phone,
+  Pencil,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -31,6 +33,7 @@ export const UtilisateursPage: React.FC = () => {
   const limit = 15;
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isResetPwdModalOpen, setIsResetPwdModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
 
@@ -40,6 +43,14 @@ export const UtilisateursPage: React.FC = () => {
   const [telephone, setTelephone] = useState('');
   const [motDePasse, setMotDePasse] = useState('Baraka@2026');
   const [newRole, setNewRole] = useState<'OPERATEUR' | 'ADMIN'>('OPERATEUR');
+
+  const [editNom, setEditNom] = useState('');
+  const [editPrenom, setEditPrenom] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editTelephone, setEditTelephone] = useState('');
+  const [editAdresse, setEditAdresse] = useState('');
+  const [editContactNom, setEditContactNom] = useState('');
+  const [editContactTel, setEditContactTel] = useState('');
 
   const [resetPwd, setResetPwd] = useState('Baraka@2026');
 
@@ -76,6 +87,18 @@ export const UtilisateursPage: React.FC = () => {
     },
     onError: (err: Error) => toast.error(err.message),
   });
+
+  const [modifierUtilisateur, { loading: loadingEdit }] = useMutation<any>(
+    MODIFIER_UTILISATEUR_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success('Utilisateur modifié avec succès');
+        setIsEditModalOpen(false);
+        refetch();
+      },
+      onError: (err: Error) => toast.error(err.message),
+    },
+  );
 
   const [reinitialiserMdp, { loading: loadingReset }] = useMutation<any>(
     REINITIALISER_MDP_MUTATION,
@@ -121,6 +144,40 @@ export const UtilisateursPage: React.FC = () => {
       variables: {
         userId: selectedUser.id,
         nouveauMotDePasse: resetPwd,
+      },
+    });
+  };
+
+  const openEditModal = (u: any) => {
+    setSelectedUser(u);
+    setEditNom(u.nom ?? '');
+    setEditPrenom(u.prenom ?? '');
+    setEditEmail(u.email ?? '');
+    setEditTelephone(u.telephone ?? '');
+    setEditAdresse(u.adresse ?? '');
+    setEditContactNom(u.contactUrgenceNom ?? '');
+    setEditContactTel(u.contactUrgenceTel ?? '');
+    setIsEditModalOpen(true);
+  };
+
+  const handleEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedUser || !editNom.trim()) {
+      toast.error('Le nom est obligatoire');
+      return;
+    }
+    modifierUtilisateur({
+      variables: {
+        userId: selectedUser.id,
+        input: {
+          nom: editNom.trim(),
+          prenom: editPrenom.trim() || null,
+          email: editEmail.trim() || null,
+          telephone: editTelephone.trim() || null,
+          adresse: editAdresse.trim() || null,
+          contactUrgenceNom: editContactNom.trim() || null,
+          contactUrgenceTel: editContactTel.trim() || null,
+        },
       },
     });
   };
@@ -266,6 +323,14 @@ export const UtilisateursPage: React.FC = () => {
 
                     <td className="p-3.5 sm:p-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => openEditModal(u)}
+                          className="p-1.5 hover:bg-[var(--color-brand-charcoal)] text-[var(--color-brand-muted)] hover:text-[var(--color-brand-cream)] rounded transition cursor-pointer"
+                          title="Modifier l'utilisateur"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+
                         <button
                           onClick={() => {
                             setSelectedUser(u);
@@ -430,6 +495,125 @@ export const UtilisateursPage: React.FC = () => {
               isLoading={loadingCreate}
             >
               Créer le Compte
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Modifier l'Utilisateur"
+        maxWidth="lg"
+      >
+        <form onSubmit={handleEdit} className="space-y-4">
+          <p className="text-xs text-[var(--color-brand-muted)]">
+            Mettre à jour les informations de {selectedUser?.prenom} {selectedUser?.nom}
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+                Nom *
+              </label>
+              <input
+                type="text"
+                required
+                value={editNom}
+                onChange={(e) => setEditNom(e.target.value)}
+                className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+                Prénom
+              </label>
+              <input
+                type="text"
+                value={editPrenom}
+                onChange={(e) => setEditPrenom(e.target.value)}
+                className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+                Email
+              </label>
+              <input
+                type="email"
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+                Téléphone
+              </label>
+              <input
+                type="tel"
+                value={editTelephone}
+                onChange={(e) => setEditTelephone(e.target.value)}
+                className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+              Adresse
+            </label>
+            <input
+              type="text"
+              value={editAdresse}
+              onChange={(e) => setEditAdresse(e.target.value)}
+              className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+            />
+          </div>
+
+          {selectedUser?.role === 'CITOYEN' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-[var(--color-brand-border)]">
+              <div>
+                <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+                  Contact d'urgence
+                </label>
+                <input
+                  type="text"
+                  value={editContactNom}
+                  onChange={(e) => setEditContactNom(e.target.value)}
+                  placeholder="Nom du contact"
+                  className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+                  Tél. contact d'urgence
+                </label>
+                <input
+                  type="tel"
+                  value={editContactTel}
+                  onChange={(e) => setEditContactTel(e.target.value)}
+                  placeholder="+243..."
+                  className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 pt-3 border-t border-[var(--color-brand-border)]">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditModalOpen(false)}
+            >
+              Annuler
+            </Button>
+            <Button type="submit" variant="primary" size="sm" isLoading={loadingEdit}>
+              Enregistrer
             </Button>
           </div>
         </form>

@@ -3,11 +3,13 @@ import { Outlet } from 'react-router';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { FcmBridge } from './FcmBridge';
+import { RealtimeBridge } from './RealtimeBridge';
 
 export const Layout: React.FC = () => {
   return (
     <div className="h-screen h-[100dvh] w-screen w-[100dvw] flex overflow-hidden bg-[var(--color-brand-ink)] text-[var(--color-brand-cream)]">
       <FcmBridge />
+      <RealtimeBridge />
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <Header />
