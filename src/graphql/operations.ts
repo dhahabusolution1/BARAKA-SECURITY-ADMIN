@@ -345,6 +345,8 @@ export const GET_EQUIPES_QUERY = gql`
         nom
         telephone
         roleDansEquipe
+        hasAccesApp
+        userId
       }
       alertes {
         id
@@ -396,6 +398,18 @@ export const AJOUTER_MEMBRE_EQUIPE_MUTATION = gql`
 export const RETIRER_MEMBRE_EQUIPE_MUTATION = gql`
   mutation RetirerMembreEquipe($membreId: ID!) {
     retirerMembreEquipe(membreId: $membreId)
+  }
+`;
+
+export const ACTIVER_ACCES_MEMBRE_EQUIPE_MUTATION = gql`
+  mutation ActiverAccesMembreEquipe($membreId: ID!, $motDePasse: String!) {
+    activerAccesMembreEquipe(membreId: $membreId, motDePasse: $motDePasse) {
+      id
+      nom
+      telephone
+      hasAccesApp
+      userId
+    }
   }
 `;
 

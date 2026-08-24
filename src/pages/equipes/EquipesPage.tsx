@@ -7,6 +7,7 @@ import {
   SUPPRIMER_EQUIPE_MUTATION,
   AJOUTER_MEMBRE_EQUIPE_MUTATION,
   RETIRER_MEMBRE_EQUIPE_MUTATION,
+  ACTIVER_ACCES_MEMBRE_EQUIPE_MUTATION,
 } from '../../graphql/operations';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
@@ -20,6 +21,7 @@ import {
   Users,
   Trash2,
   UserPlus,
+  Smartphone,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -29,7 +31,10 @@ export const EquipesPage: React.FC = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
+  const [isAccessModalOpen, setIsAccessModalOpen] = useState(false);
   const [activeEquipeId, setActiveEquipeId] = useState<string | null>(null);
+  const [accessMembreId, setAccessMembreId] = useState<string | null>(null);
+  const [accessPassword, setAccessPassword] = useState('Baraka@2026');
 
   const [nom, setNom] = useState('');
   const [telephone, setTelephone] = useState('');
@@ -96,6 +101,20 @@ export const EquipesPage: React.FC = () => {
     },
     onError: (err: Error) => toast.error(err.message),
   });
+
+  const [activerAcces, { loading: loadingAccess }] = useMutation<any>(
+    ACTIVER_ACCES_MEMBRE_EQUIPE_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success('Accès app mobile activé pour cet agent');
+        setIsAccessModalOpen(false);
+        setAccessMembreId(null);
+        setAccessPassword('Baraka@2026');
+        refetch();
+      },
+      onError: (err: Error) => toast.error(err.message),
+    }
+  );
 
   const handleCreateEquipe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -232,17 +251,33 @@ export const EquipesPage: React.FC = () => {
                             </span>
                             <span className="text-[10px] text-[var(--color-brand-muted)] block truncate">
                               {m.roleDansEquipe || 'Agent'} {m.telephone && `· ${m.telephone}`}
+                              {m.hasAccesApp ? ' · App OK' : ''}
                             </span>
                           </div>
 
                           {isAdmin && (
-                            <button
-                              onClick={() => retirerMembre({ variables: { membreId: m.id } })}
-                              className="text-[var(--color-brand-muted)] hover:text-red-400 p-1 cursor-pointer shrink-0"
-                              title="Retirer ce membre"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                            <div className="flex items-center shrink-0">
+                              {!m.hasAccesApp && (
+                                <button
+                                  onClick={() => {
+                                    setAccessMembreId(m.id);
+                                    setAccessPassword('Baraka@2026');
+                                    setIsAccessModalOpen(true);
+                                  }}
+                                  className="text-[var(--color-brand-gold)] hover:text-white p-1 cursor-pointer"
+                                  title="Activer l’accès app mobile"
+                                >
+                                  <Smartphone className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                              <button
+                                onClick={() => retirerMembre({ variables: { membreId: m.id } })}
+                                className="text-[var(--color-brand-muted)] hover:text-red-400 p-1 cursor-pointer"
+                                title="Retirer ce membre"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           )}
                         </div>
                       ))
@@ -418,6 +453,50 @@ export const EquipesPage: React.FC = () => {
               isLoading={loadingAddMembre}
             >
               Ajouter le Membre
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={isAccessModalOpen}
+        onClose={() => setIsAccessModalOpen(false)}
+        title="Activer l’accès app mobile"
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!accessMembreId || !accessPassword) {
+              toast.error('Mot de passe requis');
+              return;
+            }
+            activerAcces({
+              variables: { membreId: accessMembreId, motDePasse: accessPassword },
+            });
+          }}
+          className="space-y-4"
+        >
+          <p className="text-xs text-[var(--color-brand-muted)]">
+            L’agent se connectera sur l’app Flutter avec son numéro de téléphone et ce mot de passe.
+          </p>
+          <div>
+            <label className="block text-xs font-semibold text-[var(--color-brand-muted)] mb-1 uppercase">
+              Mot de passe initial *
+            </label>
+            <input
+              type="text"
+              required
+              value={accessPassword}
+              onChange={(e) => setAccessPassword(e.target.value)}
+              className="w-full p-2.5 bg-[var(--color-brand-elevated)] border border-[var(--color-brand-border)] focus:border-[var(--color-brand-gold)] rounded-lg text-sm text-[var(--color-brand-cream)] focus:outline-none"
+            />
+          </div>
+          <div className="flex justify-end gap-2 pt-3 border-t border-[var(--color-brand-border)]">
+            <Button type="button" variant="outline" size="sm" onClick={() => setIsAccessModalOpen(false)}>
+              Annuler
+            </Button>
+            <Button type="submit" variant="primary" size="sm" isLoading={loadingAccess}>
+              Activer l’accès
             </Button>
           </div>
         </form>

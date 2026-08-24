@@ -237,6 +237,7 @@ export const UtilisateursPage: React.FC = () => {
             <option value="ADMIN">🛡️ Admin</option>
             <option value="SUPER_ADMIN">👑 Super Admin</option>
             <option value="CITOYEN">📱 Citoyen</option>
+            <option value="MEMBRE_EQUIPE">🛡️ Agent terrain</option>
           </select>
         </div>
 

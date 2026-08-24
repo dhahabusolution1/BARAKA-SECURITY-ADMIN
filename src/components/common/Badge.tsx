@@ -18,6 +18,7 @@ type BadgeVariant =
   | 'ADMIN'
   | 'OPERATEUR'
   | 'CITOYEN'
+  | 'MEMBRE_EQUIPE'
   | 'DEFAULT';
 
 type Props = {
@@ -144,6 +145,12 @@ const VARIANT_CONFIGS: Record<
     bg: 'bg-neutral-900',
     text: 'text-neutral-300',
     border: 'border-neutral-700',
+  },
+  MEMBRE_EQUIPE: {
+    label: 'Agent terrain',
+    bg: 'bg-emerald-950/70',
+    text: 'text-emerald-300',
+    border: 'border-emerald-800',
   },
 };
 
