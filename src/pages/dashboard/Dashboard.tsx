@@ -18,9 +18,10 @@ import {
   Phone,
   CheckCircle2,
 } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const { data, loading, error, refetch } = useQuery<any>(GET_DASHBOARD_OPS_QUERY, {
     pollInterval: 15000,
   });
