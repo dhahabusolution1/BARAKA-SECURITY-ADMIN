@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client/react';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 import { LOGIN_OPS_MUTATION } from '../../graphql/operations';
 import { useAuthStore } from '../../stores/authStore';
 import { Button } from '../../components/common/Button';
@@ -12,8 +12,12 @@ export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [motDePasse, setMotDePasse] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { setAuth } = useAuthStore();
+  const { setAuth, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   const [loginOps, { loading }] = useMutation(LOGIN_OPS_MUTATION, {
     onCompleted: (data: any) => {

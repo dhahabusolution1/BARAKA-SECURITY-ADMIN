@@ -19,6 +19,27 @@ export const LOGIN_OPS_MUTATION = gql`
   }
 `;
 
+export const REFRESH_TOKEN_MUTATION = gql`
+  mutation RefreshToken($refreshToken: String!) {
+    refreshToken(refreshToken: $refreshToken) {
+      accessToken
+      refreshToken
+      user {
+        id
+        nom
+        prenom
+        email
+        telephone
+        role
+        photoUrl
+        adresse
+        contactUrgenceNom
+        contactUrgenceTel
+      }
+    }
+  }
+`;
+
 export const UPDATE_FCM_TOKEN_MUTATION = gql`
   mutation UpdateFcmToken($token: String!, $plateforme: Plateforme!) {
     updateFcmToken(token: $token, plateforme: $plateforme)

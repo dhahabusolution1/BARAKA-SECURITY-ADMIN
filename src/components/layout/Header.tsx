@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import { useUiStore } from '../../stores/uiStore';
 import { useRealtimeStore } from '../../stores/realtimeStore';
+import { apolloClient } from '../../graphql/client';
 import { Badge } from '../common/Badge';
 import { LogOut, Menu, Radio } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -20,6 +21,7 @@ export const Header: React.FC = () => {
 
   const handleLogout = () => {
     logout();
+    void apolloClient.clearStore();
     navigate('/login');
   };
 
